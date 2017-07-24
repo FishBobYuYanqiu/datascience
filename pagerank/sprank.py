@@ -22,14 +22,12 @@ for row in cur:
     if to_id not in from_ids : continue
     links.append(row)
     if to_id not in to_ids : to_ids.append(to_id)
-
 # Get latest page ranks for strongly connected component
 prev_ranks = dict()
 for node in from_ids:
     cur.execute('''SELECT new_rank FROM Pages WHERE id = ?''', (node, ))
     row = cur.fetchone()
     prev_ranks[node] = row[0]
-
 sval = input('How many iterations:')
 many = 1
 if ( len(sval) > 0 ) : many = int(sval)
@@ -38,7 +36,6 @@ if ( len(sval) > 0 ) : many = int(sval)
 if len(prev_ranks) < 1 : 
     print("Nothing to page rank.  Check data.")
     quit()
-
 # Lets do Page Rank in memory so it is really fast
 for i in range(many):
     # print prev_ranks.items()[:5]
@@ -65,10 +62,10 @@ for i in range(many):
     
         for id in give_ids:
             next_ranks[id] = next_ranks[id] + amount
-    
     newtot = 0
     for (node, next_rank) in list(next_ranks.items()):
         newtot = newtot + next_rank
+    print(newtot)
     evap = (total - newtot) / len(next_ranks)
 
     # print newtot, evap
@@ -100,4 +97,3 @@ for (id, new_rank) in list(next_ranks.items()) :
     cur.execute('''UPDATE Pages SET new_rank=? WHERE id=?''', (new_rank, id))
 conn.commit()
 cur.close()
-
